@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "test/**/*.ts", "test/**/*.{ts,d.ts}"],
+  "exclude": ["dist", "node_modules"],
+  "files": [
+    "test/unsafeResolveDeadlyEmbrace.test.d.ts",
+    "test/stubs/constructs/index.d.ts",
+    "test/stubs/aws-cdk-lib/index.d.ts",
+    "test/stubs/aws-cdk-lib/aws-dynamodb/index.d.ts",
+    "test/stubs/assertions/index.d.ts"
+  ]
+}

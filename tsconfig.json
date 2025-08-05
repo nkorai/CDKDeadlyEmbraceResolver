@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+    ,
+    "baseUrl": ".",
+    "paths": {
+      "aws-cdk-lib": ["./test/stubs/aws-cdk-lib/index"],
+      "aws-cdk-lib/*": ["./test/stubs/aws-cdk-lib/*"],
+      "constructs": ["./test/stubs/constructs/index"],
+      "@aws-cdk/assertions": ["./test/stubs/assertions/index"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
