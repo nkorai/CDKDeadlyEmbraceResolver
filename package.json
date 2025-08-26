@@ -1,6 +1,6 @@
 {
   "name": "cdk-deadly-embrace-resolver",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Unsafe helper for preserving CloudFormation exports during CDK cross‑stack reference removal. Useful for working around the dreaded \"deadly embrace\" problem.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

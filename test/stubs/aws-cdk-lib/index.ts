@@ -1,9 +1,34 @@
 import { Construct } from '../constructs/index';
 
 /**
- * Minimal App class.  In the real CDK this class represents the root
- * of the construct tree.  Our stub simply initialises the root
- * construct and does not implement any CLI behaviour.
+ * Extremely small Token stub. In real CDK, Tokens represent lazily
+ * resolved values. Here, we just tag objects created via `Token.asString`
+ * and detect them with `Token.isUnresolved`.
+ */
+const TOKEN_SYMBOL = Symbol.for('cdk.Token');
+
+export class Token {
+  /** Returns true if the value is a stubbed Token created by this module. */
+  public static isUnresolved(value: any): boolean {
+    return typeof value === 'object' && value !== null && (value as any)[TOKEN_SYMBOL] === true;
+  }
+
+  /**
+   * Create a stubbed token value. Useful in tests if you want to ensure
+   * code paths treat a value as an unresolved token.
+   */
+  public static asString(hint: string = 'Token'): any {
+    return {
+      [TOKEN_SYMBOL]: true,
+      toString() {
+        return `Token[${hint}]`;
+      },
+    };
+  }
+}
+
+/**
+ * Minimal App class. In the real CDK this represents the root of the construct tree.
  */
 export class App extends Construct {
   constructor() {
@@ -12,34 +37,25 @@ export class App extends Construct {
 }
 
 /**
- * A simplified Stack implementation.  It keeps track of its name,
- * provides a method for registering exports and exposes a static
- * `of()` helper similar to the real CDK.  Children of the stack
- * assign themselves the same stack reference when they are
- * constructed.
+ * A simplified Stack implementation.
  */
 export class Stack extends Construct {
   public readonly stackName: string;
+
   /**
-   * Registered outputs keyed by logical output name.  The CDK uses
-   * auto‑generated logical IDs for outputs; we follow the same
-   * convention (`Output1`, `Output2`, …).
+   * Registered outputs keyed by logical output name (Output1, Output2, ...).
    */
   public readonly outputs: Record<string, { Value: any; Export: { Name: string } }> = {};
+
   constructor(scope: Construct, id: string) {
     super(scope, id);
     this.stackName = id;
-    // In the CDK a stack is also a construct.  Assign the stack
-    // reference so that `Stack.of(child)` can retrieve it.
+    // In CDK a stack is also a construct. Assign the stack reference so Stack.of(child) works.
     this.stack = this;
   }
 
   /**
-   * Register an export on this stack.  CloudFormation exports are
-   * represented in the Outputs section of the template.  We simulate
-   * that here by storing them in the `outputs` map.  The return
-   * value mirrors the behaviour of CDK’s `exportValue`, which
-   * returns the original token unchanged.
+   * Register an export on this stack. Mirrors `exportValue` by returning the input value.
    */
   public exportValue(value: any, options: { name?: string } = {}): any {
     const name = options.name ?? '';
@@ -49,10 +65,7 @@ export class Stack extends Construct {
   }
 
   /**
-   * Given a construct, return the stack in which it is defined.  In
-   * the real CDK this walks up the construct tree.  Our stub relies
-   * on each construct storing a `stack` reference, which is set
-   * during construction.
+   * Return the stack in which a construct is defined.
    */
   public static of(construct: any): Stack {
     return construct.stack;
@@ -60,11 +73,8 @@ export class Stack extends Construct {
 }
 
 /**
- * A stub for the CloudFormation resource base class.  This class
- * exposes a `logicalId` property which is used by the resolver to
- * construct export names.  In a real CDK application logical IDs are
- * generated based on the construct’s path and hashed to ensure
-   uniqueness.  Our stub simply uses the id passed to the constructor.
+ * A stub for the CloudFormation resource base class.
+ * Exposes a `logicalId` (string) used by tests and helpers.
  */
 export class CfnResource extends Construct {
   public readonly logicalId: string;
@@ -74,8 +84,7 @@ export class CfnResource extends Construct {
   }
 }
 
-// Export namespaces corresponding to submodules.  Jest’s moduleNameMapper
-// rewrites imports like `aws-cdk-lib/aws-dynamodb` to
-// `.../test/stubs/aws-cdk-lib/aws-dynamodb`.
+// Export namespaces corresponding to submodules. Jest’s moduleNameMapper
+// rewrites imports like `aws-cdk-lib/aws-dynamodb` to this stub tree.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export * as aws_dynamodb from './aws-dynamodb/index';
